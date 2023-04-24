@@ -7,7 +7,8 @@ import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
 
 const returnClarifaiRequestOptions = (imageUrl) => {
   // Your PAT (Personal Access Token) can be found in the portal under Authentification
-  const PAT = "187577c34fec4e8e913cc5202abb1e5e";
+  const PAT = "2152dae1870744a7b80a40e21ef3b638";
+  // const PAT = "187577c34fec4e8e913cc5202abb1e5e";
   // Specify the correct user_id/app_id pairings
   // Since you're making inferences outside your app's scope
   const USER_ID = "jarpiino";
@@ -54,6 +55,7 @@ class App extends Component {
       box: {},
     };
   }
+
   calcFaceLocation = (data) => {
     const clarifaiFace =
       data.outputs[0].data.regions[0].region_info.bounding_box;
