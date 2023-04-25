@@ -1,22 +1,16 @@
 import React from "react";
 import Logo from "./Logo/Logo";
 import LoginSignup from "./LoginSignup/LoginSignup";
+import "./Navigation.css";
 
-const Navigation = () => {
+const Navigation = ({ onRouteChange, isSignedIn }) => {
   return (
-    <nav
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "0 20px",
-      }}
-    >
+    <nav>
       <div>
         <Logo />
       </div>
       <div>
-        <LoginSignup />
+        <LoginSignup isSignedIn={isSignedIn} onRouteChange={onRouteChange} />
       </div>
     </nav>
   );
