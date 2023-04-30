@@ -1,27 +1,26 @@
 :root {
-    --form-width: 700px;
-  }
-.form{
-    width: var(--form-width);
-    background-color: rgba(255, 255, 255, 0.397);
+  --form-width: 700px;
+}
+.form {
+  width: var(--form-width);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 .form-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
-    
-    padding-bottom:30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+
+  padding-bottom: 30px;
 }
-.link-button{
-    display: flex;
-    gap:20px;
+.link-button {
+  display: flex;
+  gap: 20px;
 }
-.form-container p{
-    
-    width: var(--form-width);
+.form-container p {
+  width: var(--form-width);
 }
-.input-image{
-    visibility: hidden;
+.input-image {
+  visibility: hidden;
 }
