@@ -1,4 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import React, { Component } from "react";
+import axios from "axios";
 
 class Signin extends Component {
   constructor(props) {
@@ -16,6 +18,7 @@ class Signin extends Component {
   };
   onSubmitSignIn = () => {
     fetch("https://facedetect-api-backend.onrender.com/signin", {
+      // fetch("http://localhost:3000/signin", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -32,6 +35,16 @@ class Signin extends Component {
         }
       });
   };
+  // !CANT USE BECAUSE OF CLASS COMPONENTS
+  // onSubmitSignIn = () => {
+  //   // fetch("https://facedetect-api-backend.onrender.com/signin", {
+  //   const {} = useQuery({
+  //     murationFn: async () => {
+  //       const { data } = await axios.post("http://localhost:3000/signin");
+  //       return data;
+  //     },
+  //   });
+  // };
 
   render() {
     const { onRouteChange } = this.props;
