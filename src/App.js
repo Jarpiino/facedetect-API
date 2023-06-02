@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
+import { useImmer } from "use-immer";
 import "./App.css";
 import Navigation from "./components/Navigation/Navigation";
 import ImageLinkForm from "./components/ImageLinkForm/ImageLinkForm";
@@ -57,39 +58,53 @@ const returnClarifaiRequestOptions = (imageUrl) => {
   return requestOptions;
 };
 
-const initialState = {
-  input: "",
-  imageUrl: "",
-  box: {},
-  route: "signin",
-  isSignedIn: false,
-  user: {
-    id: "",
-    name: "",
-    email: "",
-    entries: 0,
-    joined: new Date(),
-  },
-};
-class App extends Component {
-  constructor() {
-    super();
-    this.state = initialState;
-  }
+const App = () => {
+  const [loggedOut, setLoggedOut] = useState({
+    input: "",
+    imageUrl: "",
+    box: {},
+    route: "signin",
+    isSignedIn: false,
+    user: {
+      id: "",
+      name: "",
+      email: "",
+      entries: 0,
+      joined: new Date(),
+    },
+  });
+  const [firstState, setFirstState] = useState({
+    input: "",
+    imageUrl: "",
+    box: {},
+    route: "signin",
+    isSignedIn: false,
+    user: {
+      id: "",
+      name: "",
+      email: "",
+      entries: 0,
+      joined: new Date(),
+    },
+  });
+  let route = firstState.route;
+  console.log(firstState.route);
+  console.log("is signed in?");
+  console.log(firstState.isSignedIn);
 
-  loadUser = (data) => {
-    this.setState({
-      user: {
-        id: data.id,
-        name: data.name,
-        email: data.email,
-        entries: data.entries,
-        joined: data.joined,
-      },
+  const loadUser = (data) => {
+    setFirstState((draft) => {
+      draft.user.id = data.id;
+      draft.user.name = data.name;
+      draft.user.email = data.email;
+      draft.user.entries = data.entries;
+      draft.user.joined = data.joined;
     });
+    console.log("firstState in data");
+    console.log(firstState);
   };
 
-  calcFaceLocation = (data) => {
+  const calcFaceLocation = (data) => {
     const clarifaiFace =
       data.outputs[0].data.regions[0].region_info.bounding_box;
     const image = document.getElementById("inputimage");
@@ -102,80 +117,80 @@ class App extends Component {
       bottomRow: height - clarifaiFace.bottom_row * height,
     };
   };
-  displayFaceBox = (box) => {
-    this.setState({ box: box });
+  const displayFaceBox = (box) => {
+    setFirstState({ ...firstState, box: box });
+    // firstState.box = box;
   };
-  onInputChange = (event) => {
-    this.setState({ input: event.target.value });
+  const onInputChange = (event) => {
+    setFirstState({ ...firstState, input: event.target.value });
+    // firstState.input = event.target.value;
   };
-  onPictureSubmit = () => {
-    this.setState({ imageUrl: this.state.input });
+  const onPictureSubmit = () => {
+    setFirstState({ ...firstState, imageUrl: firstState.input });
+    // firstState.imageUrl = firstState.input;
 
     fetch(
       "https://api.clarifai.com/v2/models/" + "face-detection" + "/outputs",
-      returnClarifaiRequestOptions(this.state.input)
+      returnClarifaiRequestOptions(firstState.input)
     )
       .then((response) => response.json())
       .then((response) => {
         if (response) {
-          fetch("https://facedetect-api-backend.onrender.com/image", {
+          // fetch("https://facedetect-api-backend.onrender.com/image", {
+          fetch("https://localhost:3000/image", {
             method: "put",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              id: this.state.user.id,
+              id: firstState.user.id,
             }),
           })
             .then((response) => response.json())
-            .then((count) => {
-              this.setState(Object.assign(this.state.user, { entries: count }));
-            })
+            // !!! deal with later
+            // .then((count) => {
+            //   this.setState(Object.assign(this.state.user, { entries: count }));
+            // })
             .catch(console.log());
         }
         this.displayFaceBox(this.calcFaceLocation(response));
       })
       .catch(console.log);
   };
-
-  onRouteChange = (route) => {
+  // let route = firstState.route;
+  const onRouteChange = (route) => {
     if (route === "signout") {
-      this.setState(initialState);
+      setFirstState(loggedOut);
     } else if (route === "home") {
-      this.setState({ isSignedIn: true });
+      setFirstState({ ...firstState, isSignedIn: true });
     }
-    this.setState({ route: route });
+    setFirstState({ ...firstState, route: route });
+
+    console.log("firstState in route change");
+    console.log(firstState);
   };
-
-  render() {
-    const { isSignedIn, box, imageUrl, route } = this.state;
-    return (
-      <div className="App">
-        <Navigation
-          isSignedIn={isSignedIn}
-          onRouteChange={this.onRouteChange}
-        />
-        {route === "home" ? (
-          <div>
-            <Rank
-              name={this.state.user.name}
-              entries={this.state.user.entries}
-            />
-            <ImageLinkForm
-              onInputChange={this.onInputChange}
-              onPictureSubmit={this.onPictureSubmit}
-            />
-            <FaceRecognition box={box} imageUrl={imageUrl} />
-          </div>
-        ) : route === "signin" || route === "signout" ? (
-          <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
-        ) : (
-          <Register
-            loadUser={this.loadUser}
-            onRouteChange={this.onRouteChange}
+  return (
+    <div className="App">
+      <Navigation
+        isSignedIn={firstState.isSignedIn}
+        onRouteChange={onRouteChange}
+      />
+      {route === "home" ? (
+        <div>
+          <Rank name={firstState.user.name} entries={firstState.user.entries} />
+          <ImageLinkForm
+            onInputChange={onInputChange}
+            onPictureSubmit={onPictureSubmit}
           />
-        )}
-      </div>
-    );
-  }
-}
-
+          <FaceRecognition
+            box={firstState.box}
+            imageUrl={firstState.imageUrl}
+          />
+        </div>
+      ) : route === "signin" || route === "signout" ? (
+        <Signin loadUser={loadUser} onRouteChange={onRouteChange} />
+      ) : (
+        <Register loadUser={firstState.user} onRouteChange={onRouteChange} />
+      )}
+    </div>
+  );
+};
 export default App;

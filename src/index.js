@@ -4,16 +4,17 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "tachyons";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const queryClient = new QueryClient();
+//! react query
+// import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+// const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
+    {/* <QueryClientProvider client={queryClient}> */}
+    <App />
+    {/* </QueryClientProvider> */}
   </React.StrictMode>
 );
 

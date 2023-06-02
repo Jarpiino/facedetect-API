@@ -19,8 +19,8 @@ class Register extends Component {
     this.setState({ password: event.target.value });
   };
   onSubmitRegister = () => {
-    fetch("https://facedetect-api-backend.onrender.com/register", {
-      // fetch("http://localhost:3000/register", {
+    // fetch("https://facedetect-api-backend.onrender.com/register", {
+    fetch("http://localhost:3000/register", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
